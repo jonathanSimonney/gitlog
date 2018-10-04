@@ -7,19 +7,36 @@ from git import Repo
 mlp.use('TkAgg')
 repo_path = sys.argv[1]
 
+# we get the list of all the commits
 repo = Repo(repo_path)
 list_commits = list(repo.iter_commits())
 
+# we prepare vars to be filled by our for loop
 contribution_timeline_dict = {}
+scattered_plot_array = np.zeros((7, 24))
+day_number_correspondances = {
+    "Sun": 0,
+    "Mon": 1,
+    "Tue": 2,
+    "Wed": 3,
+    "Thu": 4,
+    "Fri": 5,
+    "Sat": 6,
+}
 
+# we fill our dict and our ndarray
 for commit in list_commits:
-    print(commit.committed_date)
-    day_committed = (time.strftime("%a, %d %b %Y", time.gmtime(commit.committed_date)))
-    print(day_committed)
-    print(time.strftime("%a, %d %b %Y %H:%M", time.gmtime(commit.committed_date)))
+    day_committed = time.strftime("%a, %d %b %Y", time.gmtime(commit.committed_date))
     if day_committed in contribution_timeline_dict:
         contribution_timeline_dict[day_committed] += 1
     else:
         contribution_timeline_dict[day_committed] = 1
 
+    day = time.strftime("%a", time.gmtime(commit.committed_date))
+    day_int = day_number_correspondances[day]
+    hour_int = int(time.strftime("%H", time.gmtime(commit.committed_date)))
+    scattered_plot_array[day_int, hour_int] += 1
+
+# we print them
 print(contribution_timeline_dict)
+print(scattered_plot_array)
