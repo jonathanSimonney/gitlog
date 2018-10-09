@@ -27,28 +27,47 @@ def draw_picture(data_array, x_legend, y_legend, title, x_axis_on_top=False):
     im = ax.imshow(data_array)
 
     # We want to show all ticks...
-    ax.set_xticks(np.arange(53))
-    ax.set_yticks(np.arange(7))
+    ax.set_xticks(np.arange(len(x_legend)))
+    ax.set_yticks(np.arange(len(y_legend)))
     # ... and label them with the respective list entries
     ax.set_xticklabels(x_legend)
     ax.set_yticklabels(y_legend)
-
-    # Rotate the tick labels and set their alignment.
-    # pyp.setp(ax.get_xticklabels(), rotation=90, ha="right",
-    #          rotation_mode="anchor")
-
-    # Loop over data dimensions and create text annotations.
-    # for i in range(len(x_legend)):
-    #     for j in range(len(y_legend)):
-    #         text = ax.text(i, j, data_array[j, i],
-    #                        ha="center", va="center", color="w", )
 
     ax.set_title(title)
     if x_axis_on_top:
         ax.xaxis.tick_top()
     fig.tight_layout()
     pyp.savefig(title)
-    pyp.show()
+
+
+def draw_scatter(data_array, x_legend, y_legend, title, x_axis_on_top=False):
+    x_coords = []
+    y_coords = []
+    density_array = []
+
+    # we populate the arrays useful for our scatter with the one parameter given
+    for i in range(len(data_array)):
+        for j in range(len(data_array[i])):
+            if data_array[i, j] != 0:
+                x_coords.append(i)
+                y_coords.append(j)
+                density_array.append(data_array[i, j])
+
+    fig, ax = pyp.subplots()
+    im = ax.scatter(x_coords, y_coords, density_array)
+
+    # We want to show all ticks...
+    ax.set_xticks(np.arange(len(x_legend)))
+    ax.set_yticks(np.arange(len(y_legend)))
+    # ... and label them with the respective list entries
+    ax.set_xticklabels(x_legend)
+    ax.set_yticklabels(y_legend)
+
+    ax.set_title(title)
+    if x_axis_on_top:
+        ax.xaxis.tick_top()
+    fig.tight_layout()
+    pyp.savefig(title)
 
 
 repo_path = sys.argv[1]
@@ -82,15 +101,11 @@ for commit in list_commits:
     day = time.strftime("%a", time.gmtime(commit.committed_date))
     day_int = day_number_correspondances[day]
     hour_int = int(time.strftime("%H", time.gmtime(commit.committed_date)))
+
     scattered_plot_array[day_int, hour_int] += 1
     timeline_array[day_int, week_committed] += commit_intensity
 
-# we print them
-print(timeline_array)
-print(scattered_plot_array)
-
-# pyp.imshow(timeline_array, origin="upper", extent=[0, 53, 0, 7],
-#                    interpolation="nearest")
-# pyp.draw()
-# pyp.show()
+# we use them to draw our pictures
 draw_picture(timeline_array, months_array, ["", "Mon", "", "Wed", "", "Fri", ""], "Timeline.png", True)
+draw_scatter(scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], [str(i) for i in range(24)],
+             "commits.png")
