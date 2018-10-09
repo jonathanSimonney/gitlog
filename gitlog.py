@@ -11,9 +11,13 @@ repo_path = sys.argv[1]
 repo = Repo(repo_path)
 list_commits = list(repo.iter_commits())
 
+# some configurations vars
+commit_intensity = 10
+
 # we prepare vars to be filled by our for loop
-contribution_timeline_dict = {}
+# contribution_timeline_dict = {}
 scattered_plot_array = np.zeros((7, 24))
+timeline_array = np.zeros((53, 7))
 day_number_correspondances = {
     "Sun": 0,
     "Mon": 1,
@@ -26,17 +30,19 @@ day_number_correspondances = {
 
 # we fill our dict and our ndarray
 for commit in list_commits:
-    day_committed = time.strftime("%a, %d %b %Y", time.gmtime(commit.committed_date))
-    if day_committed in contribution_timeline_dict:
-        contribution_timeline_dict[day_committed] += 1
-    else:
-        contribution_timeline_dict[day_committed] = 1
+    week_committed = int(time.strftime("%V", time.gmtime(commit.committed_date)))
+    # if day_committed in contribution_timeline_dict:
+    #     contribution_timeline_dict[day_committed] += 1
+    # else:
+    #     contribution_timeline_dict[day_committed] = 1
+    # print(day_committed)
 
     day = time.strftime("%a", time.gmtime(commit.committed_date))
     day_int = day_number_correspondances[day]
     hour_int = int(time.strftime("%H", time.gmtime(commit.committed_date)))
     scattered_plot_array[day_int, hour_int] += 1
+    timeline_array[week_committed, day_int] += commit_intensity
 
 # we print them
-print(contribution_timeline_dict)
+print(timeline_array)
 print(scattered_plot_array)
