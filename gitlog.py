@@ -30,12 +30,7 @@ day_number_correspondances = {
 
 # we fill our dict and our ndarray
 for commit in list_commits:
-    week_committed = int(time.strftime("%V", time.gmtime(commit.committed_date)))
-    # if day_committed in contribution_timeline_dict:
-    #     contribution_timeline_dict[day_committed] += 1
-    # else:
-    #     contribution_timeline_dict[day_committed] = 1
-    # print(day_committed)
+    week_committed = int(time.strftime("%U", time.gmtime(commit.committed_date))) - 1
 
     day = time.strftime("%a", time.gmtime(commit.committed_date))
     day_int = day_number_correspondances[day]
