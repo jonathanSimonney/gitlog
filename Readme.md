@@ -8,7 +8,7 @@ to use this project, simply run
     
 And in the newly opened shell, 
 
-    gitlog.py path_to_git_repo
+    python gitlog.py path_to_git_repo
     
 ## prerequisite
 you need to have pipenv installed on your computer
