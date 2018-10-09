@@ -3,3 +3,6 @@ vue
 semaine-agence
 
 # vue and semaine-agence are cloned git repos used to test the project, so they shouldn't be pushed
+
+*.png
+# picture generated shouldn't be pushed to repo.

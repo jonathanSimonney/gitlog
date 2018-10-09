@@ -21,7 +21,7 @@ def generate_months_array():
     return ret
 
 
-def draw_picture(data_array, x_legend, y_legend, title):
+def draw_picture(data_array, x_legend, y_legend, title, x_axis_on_top=False):
 
     fig, ax = pyp.subplots()
     im = ax.imshow(data_array)
@@ -44,7 +44,10 @@ def draw_picture(data_array, x_legend, y_legend, title):
     #                        ha="center", va="center", color="w", )
 
     ax.set_title(title)
+    if x_axis_on_top:
+        ax.xaxis.tick_top()
     fig.tight_layout()
+    pyp.savefig(title)
     pyp.show()
 
 
@@ -55,7 +58,7 @@ repo = Repo(repo_path)
 list_commits = list(repo.iter_commits())
 
 # some configurations vars
-commit_intensity = 10
+commit_intensity = 1
 months_array = generate_months_array()
 day_number_correspondances = {
     "Sun": 0,
@@ -90,4 +93,4 @@ print(scattered_plot_array)
 #                    interpolation="nearest")
 # pyp.draw()
 # pyp.show()
-draw_picture(timeline_array, months_array, ["", "Mon", "", "Wed", "", "Fri", ""], "Timeline.png")
+draw_picture(timeline_array, months_array, ["", "Mon", "", "Wed", "", "Fri", ""], "Timeline.png", True)
