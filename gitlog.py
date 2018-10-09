@@ -91,8 +91,10 @@ day_number_correspondances = {
 
 # we prepare vars to be filled by our for loop
 # contribution_timeline_dict = {}
-scattered_plot_array = np.zeros((7, 24))
+commits_scattered_plot_array = np.zeros((7, 24))
 timeline_array = np.zeros((7, 53))
+committers_name_dict = {}
+committers_name_array = []
 
 # we fill our dict and our ndarray
 for commit in list_commits:
@@ -102,10 +104,28 @@ for commit in list_commits:
     day_int = day_number_correspondances[day]
     hour_int = int(time.strftime("%H", time.gmtime(commit.committed_date)))
 
-    scattered_plot_array[day_int, hour_int] += 1
+    commits_scattered_plot_array[day_int, hour_int] += 1
     timeline_array[day_int, week_committed] += commit_intensity
+
+    committer_name = commit.committer.name
+    if committer_name not in committers_name_dict:
+        committers_name_dict[committer_name] = len(committers_name_array)
+        committers_name_array.append(committer_name)
+
+commiters_scattered_plot_array = np.zeros((7, len(committers_name_array)))
+# we iterate once more to get another scatter_plot with the contributor this time
+for commit in list_commits:
+    day = time.strftime("%a", time.gmtime(commit.committed_date))
+    day_int = day_number_correspondances[day]
+
+    committer_name = commit.committer.name
+    committer_int = committers_name_dict[committer_name]
+
+    commiters_scattered_plot_array[day_int, committer_int] += 1
 
 # we use them to draw our pictures
 draw_picture(timeline_array, months_array, ["", "Mon", "", "Wed", "", "Fri", ""], "Timeline.png", True)
-draw_scatter(scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], [str(i) for i in range(24)],
+draw_scatter(commits_scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], [str(i) for i in range(24)],
              "commits.png")
+draw_scatter(commiters_scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], committers_name_array,
+             "commits_per_person.png")
