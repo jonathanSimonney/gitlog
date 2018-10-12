@@ -1,7 +1,7 @@
 # gitlog
 
 ## setup
-to use this project, simply run 
+to use this project, run 
 
     pipenv install
     pipenv shell
@@ -21,5 +21,6 @@ these name already exist, they'll be overwritten:
 - A ```commits.png``` file containing a scatter plot where  size of dots depends of the number of commits, on the horizontal axis 
 the seven days of the week, and on the vertical axis the 24h of the day.
 - A ```commits_per_person.png``` file containing a scatter plot where  size of dots depends of the number of commits, on the horizontal axis 
-the seven days of the week, and on the vertical axis the different contributors.
+the 24 hours, and on the vertical axis the last 25 contributors (but their entire contribution historic will be 
+taken into account).
 - Others, if I have some other ideas.

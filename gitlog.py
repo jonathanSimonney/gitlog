@@ -78,6 +78,7 @@ list_commits = list(repo.iter_commits())
 
 # some configurations vars
 commit_intensity = 1
+max_number_commiters = 25
 months_array = generate_months_array()
 day_number_correspondances = {
     "Sun": 0,
@@ -107,25 +108,25 @@ for commit in list_commits:
     commits_scattered_plot_array[day_int, hour_int] += 1
     timeline_array[day_int, week_committed] += commit_intensity
 
-    committer_name = commit.committer.name
-    if committer_name not in committers_name_dict:
+    committer_name = commit.author.name
+    if committer_name not in committers_name_dict and len(committers_name_array) < max_number_commiters:
         committers_name_dict[committer_name] = len(committers_name_array)
         committers_name_array.append(committer_name)
 
-commiters_scattered_plot_array = np.zeros((7, len(committers_name_array)))
+commiters_scattered_plot_array = np.zeros((24, len(committers_name_array)))
 # we iterate once more to get another scatter_plot with the contributor this time
 for commit in list_commits:
-    day = time.strftime("%a", time.gmtime(commit.committed_date))
-    day_int = day_number_correspondances[day]
+    hour_int = int(time.strftime("%H", time.gmtime(commit.committed_date)))
 
-    committer_name = commit.committer.name
-    committer_int = committers_name_dict[committer_name]
+    committer_name = commit.author.name
+    if committer_name in committers_name_dict:
+        committer_int = committers_name_dict[committer_name]
 
-    commiters_scattered_plot_array[day_int, committer_int] += 1
+        commiters_scattered_plot_array[hour_int, committer_int] += 1
 
 # we use them to draw our pictures
 draw_picture(timeline_array, months_array, ["", "Mon", "", "Wed", "", "Fri", ""], "Timeline.png", True)
 draw_scatter(commits_scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], [str(i) for i in range(24)],
              "commits.png")
-draw_scatter(commiters_scattered_plot_array, ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], committers_name_array,
+draw_scatter(commiters_scattered_plot_array, [str(i) for i in range(24)], committers_name_array,
              "commits_per_person.png")
